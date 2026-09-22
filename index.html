@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mis 15 Años - Dayana Juárez</title>
+
+  <!-- VISTA PREVIA PARA WHATSAPP Y REDES SOCIALES -->
+  <meta property="og:title" content="✨ Mis 15 Años - Dayana Juárez 🧜‍♀️" />
+  <meta property="og:description" content="¡Acompáñame a celebrar esta mágica noche bajo el mar! Toca para abrir tu invitación." />
+  <meta property="og:image" content="https://xlessx66.github.io/tarjeta_Dayana/img/portada.jpg" />
+  <meta property="og:type" content="website" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800&family=Montserrat:wght@300;400;600&family=Great+Vibes&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ocean-dark: #010e17;
+      --ocean-deep: #042330;
+      --ocean-aqua: #1db2a6;
+      --ocean-foam: #6ce0d0;
+      --sand-gold: #f4d068;
+      --text-light: #e0f7fa;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body {
+      background: radial-gradient(circle at 50% 30%, var(--ocean-deep) 0%, var(--ocean-dark) 100%);
+      color: var(--text-light);
+      font-family: 'Montserrat', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    /* Canvas Interactivo */
+    #canvas-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* Algas Marinas */
+    .seaweed-container {
+      position: fixed;
+      bottom: -10px;
+      z-index: 3;
+      pointer-events: none;
+      display: flex;
+      gap: 8px;
+    }
+    .seaweed-left { left: 10px; }
+    .seaweed-right { right: 10px; transform: scaleX(-1); }
+
+    .seaweed-strand {
+      width: 16px;
+      height: 220px;
+      background: linear-gradient(to top, #02383b, #1db2a6, #6ce0d0);
+      border-radius: 50% 50% 0 0;
+      opacity: 0.65;
+      transform-origin: bottom center;
+      animation: sway 6s ease-in-out infinite alternate;
+      filter: drop-shadow(0 0 8px rgba(29, 178, 166, 0.4));
+    }
+    .seaweed-strand:nth-child(2) {
+      height: 280px;
+      width: 20px;
+      opacity: 0.8;
+      animation-duration: 8s;
+      animation-delay: -2s;
+    }
+
+    @keyframes sway {
+      0% { transform: rotate(-8deg) skewX(-3deg); }
+      100% { transform: rotate(12deg) skewX(4deg); }
+    }
+
+    /* CONTENEDOR PRINCIPAL */
+    .main-wrapper {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 900px;
+      margin: auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Sobre Horizontal */
+    .envelope {
+      position: relative;
+      width: 100%;
+      max-width: 750px;
+      height: 420px;
+      background: linear-gradient(135deg, #073a4e, #021824);
+      border-radius: 20px;
+      border: 2px solid rgba(108, 224, 208, 0.4);
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85), 0 0 35px rgba(29, 178, 166, 0.25);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+      padding-bottom: 40px;
+      cursor: pointer;
+      overflow: hidden;
+      transition: all 0.5s ease;
+    }
+
+    .envelope-flap {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 230px;
+      transform-origin: top center;
+      transition: transform 0.7s ease-in-out;
+      z-index: 5;
+      filter: drop-shadow(0 8px 15px rgba(0,0,0,0.6));
+    }
+
+    .seal-button {
+      position: absolute;
+      top: 180px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 6;
+      width: 80px;
+      height: 80px;
+      background: radial-gradient(circle, #f4d068 0%, #b89128 100%);
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 2.4rem;
+      box-shadow: 0 0 25px rgba(244, 208, 104, 0.8);
+      animation: pulseSeal 2.5s infinite alternate;
+    }
+
+    @keyframes pulseSeal {
+      0% { transform: translateX(-50%) scale(1); }
+      100% { transform: translateX(-50%) scale(1.08); box-shadow: 0 0 35px rgba(108, 224, 208, 0.9); }
+    }
+
+    .envelope-title {
+      font-family: 'Cinzel', serif;
+      letter-spacing: 3px;
+      font-size: 0.95rem;
+      color: var(--ocean-foam);
+      text-transform: uppercase;
+      text-align: center;
+      z-index: 4;
+    }
+
+    .main-wrapper.opened-envelope .envelope {
+      display: none;
+    }
+
+    /* TARJETA DESPLEGADA */
+    .card-wrapper {
+      position: relative;
+      width: 100%;
+      display: none;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .main-wrapper.opened-envelope .card-wrapper {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .card {
+      background: rgba(4, 28, 39, 0.95);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 24px;
+      padding: 40px 30px;
+      border: 2px solid rgba(108, 224, 208, 0.4);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), inset 0 0 25px rgba(108, 224, 208, 0.15);
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+    }
+
+    .section-block {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .card-header-shell {
+      font-size: 3rem;
+      filter: drop-shadow(0 0 12px rgba(244, 208, 104, 0.6));
+    }
+
+    .card-subtitle {
+      font-family: 'Cinzel', serif;
+      font-size: 0.95rem;
+      letter-spacing: 4px;
+      color: var(--ocean-foam);
+      text-transform: uppercase;
+    }
+
+    .card-name {
+      font-family: 'Great Vibes', cursive;
+      font-size: 4.2rem;
+      color: #ffffff;
+      margin: 5px 0;
+      text-shadow: 0 0 18px rgba(108, 224, 208, 0.85);
+      line-height: 1.1;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+      width: 100%;
+      margin: 10px 0;
+    }
+    .divider .line {
+      height: 1px;
+      flex: 1;
+      max-width: 150px;
+      background: linear-gradient(90deg, transparent, var(--ocean-foam), transparent);
+    }
+    .divider .shell-icon {
+      font-size: 1.2rem;
+      color: var(--sand-gold);
+    }
+
+    /* REPRODUCTOR DE MÚSICA */
+    .music-player-box {
+      background: rgba(1, 14, 23, 0.6);
+      border: 1px solid rgba(108, 224, 208, 0.3);
+      border-radius: 20px;
+      padding: 15px 25px;
+      width: 100%;
+      max-width: 420px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .music-lbl {
+      font-family: 'Cinzel', serif;
+      font-size: 0.7rem;
+      letter-spacing: 2px;
+      color: var(--sand-gold);
+      text-transform: uppercase;
+    }
+
+    .music-controls {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .btn-music-play {
+      background: linear-gradient(135deg, var(--sand-gold), #b89128);
+      border: none;
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      font-size: 1.2rem;
+      color: var(--ocean-dark);
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 0 15px rgba(244, 208, 104, 0.5);
+      transition: transform 0.2s ease;
+    }
+
+    .btn-music-play:active {
+      transform: scale(0.92);
+    }
+
+    .poetic-phrase {
+      font-style: italic;
+      font-size: 0.95rem;
+      color: #b2ebf2;
+      line-height: 1.6;
+      max-width: 600px;
+    }
+
+    /* CALENDARIO DE RESERVA */
+    .calendar-container {
+      background: rgba(3, 18, 25, 0.7);
+      border: 1px solid rgba(108, 224, 208, 0.25);
+      border-radius: 16px;
+      padding: 15px 20px;
+      width: 100%;
+      max-width: 450px;
+    }
+
+    .calendar-header {
+      font-family: 'Cinzel', serif;
+      font-size: 0.9rem;
+      letter-spacing: 2px;
+      color: var(--sand-gold);
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+      text-align: center;
+      font-size: 0.8rem;
+    }
+
+    .cal-day-head {
+      font-weight: 600;
+      color: var(--ocean-foam);
+    }
+
+    .cal-day {
+      padding: 6px 0;
+      border-radius: 50%;
+      color: #ffffff;
+    }
+
+    .cal-day.active {
+      background: var(--sand-gold);
+      color: var(--ocean-dark);
+      font-weight: 700;
+      box-shadow: 0 0 10px var(--sand-gold);
+    }
+
+    /* CONTADOR */
+    .countdown-container {
+      display: flex;
+      justify-content: space-around;
+      background: rgba(3, 18, 25, 0.7);
+      border-radius: 16px;
+      padding: 12px 20px;
+      border: 1px dashed rgba(108, 224, 208, 0.35);
+      width: 100%;
+      max-width: 450px;
+    }
+
+    .time-num {
+      font-family: 'Cinzel', serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--sand-gold);
+    }
+
+    .time-lbl {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      color: var(--text-light);
+    }
+
+    /* FAMILIA / PADRINOS */
+    .family-box {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+      max-width: 500px;
+    }
+
+    .family-title {
+      font-family: 'Cinzel', serif;
+      font-size: 0.8rem;
+      letter-spacing: 2px;
+      color: var(--ocean-foam);
+      text-transform: uppercase;
+    }
+
+    .family-names {
+      font-family: 'Great Vibes', cursive;
+      font-size: 2.2rem;
+      color: #ffffff;
+      line-height: 1.2;
+    }
+
+    /* DRESS CODE */
+    .dress-code-box {
+      background: linear-gradient(135deg, rgba(29, 178, 166, 0.15), rgba(4, 35, 48, 0.8));
+      border: 1px solid var(--ocean-foam);
+      border-radius: 16px;
+      padding: 20px;
+      width: 100%;
+      max-width: 500px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .dress-code-title {
+      font-family: 'Cinzel', serif;
+      font-size: 0.85rem;
+      letter-spacing: 2px;
+      color: var(--sand-gold);
+      text-transform: uppercase;
+    }
+
+    .dress-code-val {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    .purple-prohibition {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .color-circle-prohibited {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #8a2be2, #4b0082);
+      border: 2px solid #ffffff;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 10px rgba(138, 43, 226, 0.6);
+    }
+
+    .color-circle-prohibited::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 3px;
+      background-color: #ff3333;
+      transform: rotate(-45deg);
+      box-shadow: 0 0 4px rgba(0,0,0,0.5);
+    }
+
+    .dress-code-note {
+      font-size: 0.85rem;
+      color: #e2b6ff;
+      font-style: italic;
+      margin-top: 4px;
+      text-align: center;
+    }
+
+    /* REGALO (LLUVIA DE SOBRES) */
+    .gift-box {
+      background: rgba(4, 28, 39, 0.7);
+      border: 1px solid rgba(244, 208, 104, 0.3);
+      border-radius: 16px;
+      padding: 18px;
+      width: 100%;
+      max-width: 500px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .gift-title {
+      font-family: 'Cinzel', serif;
+      font-size: 0.85rem;
+      letter-spacing: 2px;
+      color: var(--sand-gold);
+      text-transform: uppercase;
+    }
+
+    .gift-desc {
+      font-size: 0.85rem;
+      color: #ffffff;
+      line-height: 1.4;
+    }
+
+    /* BOTONES ACCIÓN */
+    .btn-group {
+      display: flex;
+      gap: 15px;
+      width: 100%;
+      max-width: 450px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 14px;
+      border-radius: 50px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 600;
+      font-size: 0.85rem;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      text-align: center;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--ocean-aqua), var(--ocean-foam));
+      color: var(--ocean-dark);
+      box-shadow: 0 0 15px rgba(29, 178, 166, 0.4);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: #ffffff;
+      border: 1.5px solid var(--ocean-foam);
+    }
+
+    @media (max-width: 600px) {
+      .card-name { font-size: 3.2rem; }
+      .envelope { height: 350px; }
+      .btn-group { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Elemento de Audio: Pista local en carpeta mp3/ -->
+  <audio id="bg-audio" loop src="mp3/bajo_el_mar.mp3" preload="auto"></audio>
+
+  <!-- Canvas con Animaciones de Fondo -->
+  <canvas id="canvas-bg"></canvas>
+
+  <!-- Algas Marinas -->
+  <div class="seaweed-container seaweed-left">
+    <div class="seaweed-strand"></div>
+    <div class="seaweed-strand"></div>
+  </div>
+  <div class="seaweed-container seaweed-right">
+    <div class="seaweed-strand"></div>
+    <div class="seaweed-strand"></div>
+  </div>
+
+  <div class="main-wrapper" id="mainWrapper">
+
+    <!-- SOBRE DE APERTURA -->
+    <div class="envelope" onclick="openInvitation()">
+      <svg class="envelope-flap" viewBox="0 0 100 50" preserveAspectRatio="none">
+        <polygon points="0,0 100,0 50,50" fill="#0b4860" />
+      </svg>
+      <div class="seal-button">🐚</div>
+      <div class="envelope-title">Toca el sello para abrir el sobre</div>
+    </div>
+
+    <!-- TARJETA PRINCIPAL -->
+    <div class="card-wrapper">
+      <div class="card">
+
+        <!-- 1. Encabezado -->
+        <div class="section-block">
+          <div class="card-header-shell">🧜‍♀️</div>
+          <div class="card-subtitle">Mis XV Años</div>
+          <div class="card-name">Dayana Juárez</div>
+        </div>
+
+        <!-- 2. Reproductor de Música -->
+        <div class="section-block">
+          <div class="music-player-box">
+            <div class="music-lbl">🎵 Bajo el mar</div>
+            <div class="music-controls">
+              <button class="btn-music-play" id="musicBtn" onclick="toggleMusic()">▶</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="divider">
+          <div class="line"></div>
+          <div class="shell-icon">🐚</div>
+          <div class="line"></div>
+        </div>
+
+        <!-- 3. Frase Poética -->
+        <div class="section-block">
+          <p class="poetic-phrase">
+            "Quince años de sueños, risas, juegos y aventuras han quedado en mi historia. Hoy me despido de mi niñez con nostalgia y alegría, lista para sumergirme en un nuevo mundo lleno de sueños por descubrir."
+          </p>
+        </div>
+
+        <!-- 4. Reserva Este Día (Calendario Corregido: Octubre 2026) -->
+        <div class="section-block">
+          <div class="calendar-container">
+            <div class="calendar-header">Reserva este día — Octubre 2026</div>
+            <div class="calendar-grid">
+              <div class="cal-day-head">DO</div>
+              <div class="cal-day-head">LU</div>
+              <div class="cal-day-head">MA</div>
+              <div class="cal-day-head">MI</div>
+              <div class="cal-day-head">JU</div>
+              <div class="cal-day-head">VI</div>
+              <div class="cal-day-head">SÁ</div>
+
+              <!-- Octubre 2026 inicia en Jueves 1 -->
+              <div class="cal-day"></div> <!-- Dom -->
+              <div class="cal-day"></div> <!-- Lun -->
+              <div class="cal-day"></div> <!-- Mar -->
+              <div class="cal-day"></div> <!-- Mié -->
+              <div class="cal-day">1</div>
+              <div class="cal-day">2</div>
+              <div class="cal-day">3</div>
+
+              <div class="cal-day">4</div>
+              <div class="cal-day">5</div>
+              <div class="cal-day">6</div>
+              <div class="cal-day">7</div>
+              <div class="cal-day">8</div>
+              <div class="cal-day">9</div>
+              <div class="cal-day">10</div>
+
+              <div class="cal-day">11</div>
+              <div class="cal-day">12</div>
+              <div class="cal-day">13</div>
+              <div class="cal-day">14</div>
+              <div class="cal-day">15</div>
+              <div class="cal-day">16</div>
+              <div class="cal-day">17</div>
+
+              <div class="cal-day">18</div>
+              <div class="cal-day">19</div>
+              <div class="cal-day">20</div>
+              <div class="cal-day">21</div>
+              <div class="cal-day">22</div>
+              <div class="cal-day">23</div>
+              <div class="cal-day">24</div>
+
+              <!-- Domingo 25 de Octubre -->
+              <div class="cal-day active">25</div>
+              <div class="cal-day">26</div>
+              <div class="cal-day">27</div>
+              <div class="cal-day">28</div>
+              <div class="cal-day">29</div>
+              <div class="cal-day">30</div>
+              <div class="cal-day">31</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. Contador Regresivo -->
+        <div class="section-block">
+          <div class="card-subtitle" style="font-size: 0.8rem; margin-bottom: 5px;">Faltan</div>
+          <div class="countdown-container">
+            <div><div class="time-num" id="cd-days">00</div><div class="time-lbl">Días</div></div>
+            <div><div class="time-num" id="cd-hours">00</div><div class="time-lbl">Horas</div></div>
+            <div><div class="time-num" id="cd-mins">00</div><div class="time-lbl">Min</div></div>
+            <div><div class="time-num" id="cd-secs">00</div><div class="time-lbl">Seg</div></div>
+          </div>
+        </div>
+
+        <div class="divider">
+          <div class="line"></div>
+          <div class="shell-icon">🐚</div>
+          <div class="line"></div>
+        </div>
+
+        <!-- 6. Mis Padrinos y Mi Mamá -->
+        <div class="section-block">
+          <div class="family-box">
+            <div class="family-title">Mis Padrinos</div>
+            <div class="family-names">Mirian Juárez</div>
+            <div class="family-names">&</div>
+            <div class="family-names">Sinti Rodas</div>
+          </div>
+          <div class="family-box" style="margin-top: 15px;">
+            <div class="family-title">Mi Mamá</div>
+            <div class="family-names">Susana Juárez</div>
+          </div>
+        </div>
+
+        <div class="divider">
+          <div class="line"></div>
+          <div class="shell-icon">🔱</div>
+          <div class="line"></div>
+        </div>
+
+        <!-- 7. Recepción y Ubicación (Waze) -->
+        <div class="section-block">
+          <div class="card-subtitle">Recepción</div>
+          <div style="font-size: 1.15rem; font-weight: 600; color: #ffffff;">El Morrito</div>
+          <div style="font-size: 0.9rem; color: var(--sand-gold);">Salón de Eventos</div>
+          <div style="font-size: 0.85rem; color: var(--ocean-foam); margin-top: 2px;">4:30 P.M.</div>
+          <a href="https://waze.com/ul/hd42qq14vh" target="_blank" class="btn btn-secondary" style="margin-top: 10px; max-width: 250px;">
+            🚗 Abrir en Waze
+          </a>
+        </div>
+
+        <!-- 8. Dress Code (Formal/Elegante + Restricción Morado) -->
+        <div class="section-block">
+          <div class="dress-code-box">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#f4d068" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20.38 3.46L16 2a4 4 0 0 0-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"></path>
+            </svg>
+            <div class="dress-code-title">Código de Vestimenta</div>
+            <div class="dress-code-val">Formal/Elegante</div>
+            
+            <div class="purple-prohibition">
+              <div class="color-circle-prohibited"></div>
+            </div>
+
+            <div class="dress-code-note">"Está estrictamente prohibida cualquier tonalidad relacionada al color morado, ya que se reserva exclusivamente para la quinceañera."</div>
+          </div>
+        </div>
+
+        <!-- 9. Regalo (Lluvia de Sobres) -->
+        <div class="section-block">
+          <div class="gift-box">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#f4d068" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+              <polyline points="22,6 12,13 2,6"></polyline>
+            </svg>
+            <div class="gift-title">Lluvia de Sobres</div>
+            <div class="gift-desc">"Entre olas, sueños y magia, un detalle tuyo será un hermoso recuerdo de esta noche tan especial."</div>
+          </div>
+        </div>
+
+        <!-- 10. Confirmación de Asistencia (+503 6180-1123) -->
+        <div class="section-block">
+          <div class="card-subtitle">Confirmar Asistencia</div>
+          <p style="font-size: 0.85rem; color: #b2ebf2; max-width: 400px;">
+            Las olas ya están listas y la magia está por comenzar... ¡Solo falta tu confirmación!
+          </p>
+          <div class="btn-group" style="margin-top: 15px;">
+            <a href="https://wa.me/50361801123?text=%C2%A1Hola!%20Confirm%C3%B3%20mi%20asistencia%20a%20los%20XV%20A%C3%B1os%20de%20Dayana%20Ju%C3%A1rez.%20%C2%A1Nos%20vemos%20all%C3%A1!" target="_blank" class="btn btn-primary">
+              💬 Confirmar por WhatsApp
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const audio = document.getElementById('bg-audio');
+    const musicBtn = document.getElementById('musicBtn');
+    let isPlaying = false;
+
+    // Función principal de abrir el sobre y sonar audio
+    function openInvitation() {
+      document.getElementById('mainWrapper').classList.add('opened-envelope');
+      playAudio();
+    }
+
+    // Reproducción segura que evita bloqueos del navegador
+    function playAudio() {
+      if (!audio) return;
+      audio.play().then(() => {
+        isPlaying = true;
+        if (musicBtn) musicBtn.innerText = '❚❚';
+      }).catch(e => {
+        console.log("El navegador requiere interacción directa o no encontró mp3/bajo_el_mar.mp3:", e);
+      });
+    }
+
+    // Control para el botón Play/Pausa
+    function toggleMusic() {
+      if (!audio) return;
+      if (isPlaying) {
+        audio.pause();
+        isPlaying = false;
+        if (musicBtn) musicBtn.innerText = '▶';
+      } else {
+        playAudio();
+      }
+    }
+
+    // CANVAS COMPLETO (Efectos marinos)
+    const canvas = document.getElementById('canvas-bg');
+    const ctx = canvas.getContext('2d');
+    let width, height;
+    let step = 0;
+
+    function resize() {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+      initStars();
+      initFish();
+    }
+
+    // Estrellas
+    let skyStars = [];
+    function initStars() {
+      skyStars = [];
+      const numStars = Math.floor((width * height) / 4500);
+      for (let i = 0; i < numStars; i++) {
+        skyStars.push({
+          x: Math.random() * width,
+          y: Math.random() * (height * 0.65),
+          radius: Math.random() * 1.5 + 0.3,
+          alpha: Math.random(),
+          twinkleSpeed: Math.random() * 0.02 + 0.005
+        });
+      }
+    }
+
+    function drawSky() {
+      skyStars.forEach(star => {
+        star.alpha += star.twinkleSpeed;
+        if (star.alpha > 1 || star.alpha < 0.2) star.twinkleSpeed = -star.twinkleSpeed;
+
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 255, 255, ${Math.abs(star.alpha)})`;
+        ctx.fill();
+      });
+    }
+
+    // Peces
+    let fishes = [];
+    function initFish() {
+      fishes = [];
+      for (let i = 0; i < 12; i++) {
+        const direction = Math.random() > 0.5 ? 1 : -1;
+        fishes.push({
+          x: direction === 1 ? -50 - Math.random() * 200 : width + 50 + Math.random() * 200,
+          y: Math.random() * (height * 0.75) + (height * 0.15),
+          speed: (Math.random() * 1.2 + 0.4) * direction,
+          size: Math.random() * 12 + 10,
+          direction: direction,
+          alpha: Math.random() * 0.4 + 0.2,
+          yOffset: Math.random() * 100
+        });
+      }
+    }
+
+    function drawFish(fish) {
+      ctx.save();
+      ctx.translate(fish.x, fish.y + Math.sin(step + fish.yOffset) * 12);
+      ctx.scale(fish.direction, 1);
+      ctx.fillStyle = `rgba(108, 224, 208, ${fish.alpha})`;
+      ctx.beginPath();
+      ctx.ellipse(0, 0, fish.size, fish.size * 0.5, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.moveTo(-fish.size + 2, 0);
+      ctx.lineTo(-fish.size - (fish.size * 0.6), -fish.size * 0.5);
+      ctx.lineTo(-fish.size - (fish.size * 0.6), fish.size * 0.5);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function updateFish() {
+      fishes.forEach(fish => {
+        fish.x += fish.speed;
+        if (fish.direction === 1 && fish.x > width + 100) fish.x = -60;
+        else if (fish.direction === -1 && fish.x < -100) fish.x = width + 60;
+        drawFish(fish);
+      });
+    }
+
+    // Olas
+    function drawWave(color, amplitude, wavelength, frequency, heightOffset) {
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.moveTo(0, height);
+      for (let x = 0; x <= width; x += 10) {
+        const y = Math.sin(x * wavelength + step * frequency) * amplitude + (height * heightOffset);
+        ctx.lineTo(x, y);
+      }
+      ctx.lineTo(width, height);
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    // Burbujas
+    class Bubble {
+      constructor() { this.reset(); }
+      reset() {
+        this.x = Math.random() * width;
+        this.y = height + 20;
+        this.radius = Math.random() * 3 + 1.5;
+        this.speed = Math.random() * 1 + 0.4;
+        this.alpha = Math.random() * 0.4 + 0.2;
+        this.swing = Math.random() * 0.03;
+        this.swingCount = Math.random() * Math.PI;
+      }
+      update() {
+        this.y -= this.speed;
+        this.swingCount += this.swing;
+        this.x += Math.sin(this.swingCount) * 0.5;
+        if (this.y < -10) this.reset();
+      }
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(108, 224, 208, ${this.alpha})`;
+        ctx.fill();
+      }
+    }
+
+    const bubbles = Array.from({ length: 30 }, () => new Bubble());
+
+    function animate() {
+      ctx.clearRect(0, 0, width, height);
+      step += 0.025;
+
+      drawSky();
+      updateFish();
+
+      drawWave('rgba(7, 56, 72, 0.45)', 25, 0.003, 0.8, 0.68);
+      drawWave('rgba(29, 178, 166, 0.15)', 35, 0.005, 1.2, 0.76);
+      drawWave('rgba(4, 28, 39, 0.70)', 20, 0.004, 0.6, 0.84);
+      drawWave('rgba(108, 224, 208, 0.14)', 30, 0.007, 1.5, 0.90);
+
+      bubbles.forEach(b => {
+        b.update();
+        b.draw();
+      });
+
+      requestAnimationFrame(animate);
+    }
+
+    window.addEventListener('resize', resize);
+    resize();
+    animate();
+
+    // Cuenta Regresiva (Domingo 25 de Octubre 2026)
+    const eventDate = new Date('October 25, 2026 17:00:00').getTime();
+    function updateCountdown() {
+      const now = new Date().getTime();
+      const diff = eventDate - now;
+
+      if (diff > 0) {
+        document.getElementById('cd-days').innerText = String(Math.floor(diff / (1000 * 60 * 60 * 24))).padStart(2, '0');
+        document.getElementById('cd-hours').innerText = String(Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0');
+        document.getElementById('cd-mins').innerText = String(Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
+        document.getElementById('cd-secs').innerText = String(Math.floor((diff % (1000 * 60)) / 1000)).padStart(2, '0');
+      }
+    }
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+  </script>
+</body>
+</html>
